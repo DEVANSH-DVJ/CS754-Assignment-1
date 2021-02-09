@@ -46,23 +46,21 @@ D1 = dctmtx(8);
 D2 = kron(D1, D1);
 psi = kron(D2, dctmtx(T));
 
-R = zeros(H,W,T,'double');
-avg_mat = zeros(H,W,'double');
+R = zeros(H, W, T, 'double');
+avg_mat = zeros(H, W, 'double');
 
 % for i=1:H/8
 %     for j=1:W/8
 %         y = reshape(E(8*(i-1)+1:8*i,8*(j-1)+1:8*j), [8*8 1]);
 % 
-%         phi = zeros(8*8*T, 8*8, 'double');
+%         phi = zeros(8*8, 8*8*T, 'double');
 %         for k=1:T
-%             phi(8*8*(k-1)+1:8*8*k,:) = diag(reshape(C(8*(i-1)+1:8*i,8*(j-1)+1:8*j,k), [8*8 1]));
+%             phi(:,8*8*(k-1)+1:8*8*k) = diag(reshape(C(i:i+7,j:j+7,k), [8*8 1]));
 %         end
 %         
-%         x = omp(phi.'*psi, y, 40);
-% %         x = omp_e(phi.'*psi, y, noise_std^2);
+%         x = omp_e(phi*psi, y, noise_std^2);
 %         R(8*(i-1)+1:8*i,8*(j-1)+1:8*j,:) = reshape(psi*x, [8 8 T]);
 %         
-% %         finish;
 %     end
 % end
 
@@ -71,13 +69,13 @@ for i=1:H-7
     for j=1:W-7
         y = reshape(E(i:i+7,j:j+7), [8*8 1]);
 
-        phi = zeros(8*8*T, 8*8, 'double');
+        phi = zeros(8*8, 8*8*T, 'double');
         for k=1:T
-            phi(8*8*(k-1)+1:8*8*k,:) = diag(reshape(C(i:i+7,j:j+7,k), [8*8 1]));
+            phi(:,8*8*(k-1)+1:8*8*k) = diag(reshape(C(i:i+7,j:j+7,k), [8*8 1]));
         end
         
 %         x = omp(phi.'*psi, y, 20);
-        x = omp_e(phi'*psi, y, 9*8*8*noise_std^2);
+        x = omp_e(phi*psi, y, 9*8*8*noise_std^2);
         R(i:i+7,j:j+7,:) = R(i:i+7,j:j+7,:) + reshape(psi*x, [8 8 T]);
         avg_mat(i:i+7,j:j+7) = avg_mat(i:i+7,j:j+7) + ones(8,8);
         i, j
