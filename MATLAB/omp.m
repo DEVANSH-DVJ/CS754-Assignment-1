@@ -1,38 +1,27 @@
-function x = omp(A,b,S)
+function theta = omp(A, y, e)
+    [N, K] = size(A); % N:dim of signal, K:#atoms in dictionary
 
-% Orthogonal Matching Pursuit (OMP)
-% 
-% Input:
-%   A: dictionary (matrix)
-%   b: signal 
-%   S: sparsity level
-% Output:
-%   x: coeff vector for sparse representation
+    theta = zeros(K,1);      % coefficient (output)
+    r = y;                   % residual of y
+    T = [];                  % support set
+    i = 0;                   % iteration
+    A_omega = [];            % Sub-matrix of A containing columns which lie in the support set
 
-[N,K] = size(A); % N:dim of signal, K:#atoms in dictionary
-if (N ~= size(b))
-    error('Dimension not matched');
-end
-
-x = zeros(K,1);      % coefficient (output)
-r = b;               % residual of b
-omega = zeros(S,1);  % selected support
-A_omega = [];        % corresponding columns of A
-cnt = 0;
-while (cnt < S)  % choose S atoms
-    cnt = cnt+1;
-    x_tmp = zeros(K,1);
-    inds = setdiff([1:K],omega); % iterate all columns except for the chosen ones
-    for i = inds
-        x_tmp(i) = A(:,i)' * r / norm(A(:,i)); % sol of min ||a'x-b||
+    while(i < N && norm(r)^2 > e)
+        i = i + 1;
+        x_tmp = zeros(K,1);
+        indices = setdiff(1:K, T); % iterate all columns except for the chosen ones
+        for ind=indices
+            x_tmp(ind) = A(:,ind)' * r / norm(A(:,ind)); % sol of min ||a'x-b||
+        end
+        [~,j] = max(abs(x_tmp)); % Choose the next column
+        T = [T j];
+        A_omega = [A_omega A(:,j)];
+        theta_s = pinv(A_omega) * y; % Using pseudo-inverse of A_omega
+        r = y - A_omega * theta_s;
     end
-    [~,ichosen] = max(abs(x_tmp)); % choose the maximum
-    omega(cnt) = ichosen;
-    A_omega = [A_omega A(:,ichosen)];
-    x_ls = A_omega \ b;  % Aomega * x_ls = b
-    r = b - A_omega * x_ls; % update r
-end
 
-for i = 1:S
-    x(omega(i)) = x_ls(i); %x_sparse(i).value;
+    for j=1:i
+        theta(T(j)) = theta_s(j);
+    end
 end
