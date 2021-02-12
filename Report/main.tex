@@ -179,9 +179,9 @@ correct problem.
 
 \subsection*{Instructions for running the code:}
 \begin{itemize}[noitemsep]
-    \item After extracting submitted file, look for a directory named \texttt{q2}.
+    \item After extracting submitted file, look for a directory named \texttt{q2}, and \texttt{cd} (change directory) to it.
     \item File \texttt{q2.m} contains the main code which uses the OMP function defined in file \texttt{opm.m}.
-    \item Run the file \texttt{q2.m}. The results can be found in \texttt{./result/}
+    \item Run the file \texttt{q2.m}. The results can be found in \texttt{./results/} 
 \end{itemize}
 
 \subsection*{Extracting the frames from the video}
@@ -407,6 +407,15 @@ One such $\boldsymbol{g}$ is of the form $\dfrac{1}{\sqrt{n}} \sum_{k=0}^{n-1} \
 
 {\textsf{First Part}}
 
+Solution may not be unique. 
+
+For example, $\Phi= [ 1 \;\; 2 \;\;  3 \;\;  4 \;\;  5 \;\;  6] $ and $y=[8]$.
+
+Then ,      $x_1=[ 8 \;\;  0 \;\; 0 \;\; 0 \;\; 0 \;\; 0   ]^T $ and     
+            $x_2=[ 0 \;\;  4 \;\; 0 \;\; 0 \;\; 0 \;\; 0 ]^T$ 
+            are at least 2 solutions.
+
+
 \medskip
 
 Let $\Phi_i$ denote the element in $i$th column of $\Phi$, and 
@@ -440,9 +449,31 @@ and for that $i$, $\Phi_i \neq 0$; the unique solution will be
 the vector $x$ with all zero entries, except $x_i$ which shall be equal
 to $y/ \Phi_i$. In other cases, no solution. 
 
+This can be easily realised using the equality $y=\displaystyle \sum_{i=1}^{n} \Phi_i x_i$ and given conditions.
 
 
 \subsection*{4(b) Only 1 non-zero element, m=2}
+
+
+Solution may not be unique. 
+
+For example, 
+$ \Phi = $  $\begin{bmatrix}
+    1 & 2 & 4 & 5 & 6 & 9\\
+    2 & 4 & 8 & 6 & 9 & 11\\
+    \end{bmatrix} $
+  and  
+$    y= $  $\begin{bmatrix}
+    8 \\
+    16 \\
+    \end{bmatrix}$
+
+Then ,      $x_1=[ 8 \;\;  0 \;\; 0 \;\; 0 \;\; 0 \;\; 0   ]^T $ and     
+            $x_2=[ 0 \;\;  4 \;\; 0 \;\; 0 \;\; 0 \;\; 0 ]^T$ 
+            are at least 2 solutions.
+
+
+
 
 Suppose that the two elements of $\mathbf{y}$ are $y_1$ and $y_2$; 
 and correspondingly we 
@@ -496,7 +527,6 @@ infinite solutions.
 (c) Else, not unique solution.
 
 
-\newpage
 
 \subsection*{4(c) Only 2 non-zero elements, m=3}
 
@@ -539,11 +569,90 @@ The equations to solve are:
  Thus, finally we'll have a solution set. The algo or 
  the size of this set 
  and the structure of the set (i.e. whether some of the solutions
- involve the pair $(x_a, x_b)=(0,k) or (k,0) or (0,0)$ )
+ involve the pair $(x_a, x_b)=(0,k)$ or $(k,0)$ or $(0,0)$ )
  will tell us
  if there are no, unique, finitely many or infinite solutions. 
  
+\bigskip
 
+The fact is that if we want unique solutions, a sufficient condition would be 
+every 4 columns of the matrix must be linearly independent. In that case, 
+if there exists one solution, then it is unique. 
+
+Otherwise, we can find an example so that the solution will not be unique.
+For example, consider: 
+
+$ \Phi = $  $\begin{bmatrix}
+    1 & 2 & 4 & 5 & 6 & 9\\
+    2 & 4 & 8 & 6 & 9 & 11\\
+    4 & 8 & 16 & 9 & 11 & 1\\
+    \end{bmatrix} $
+  and  
+$    y= $  $\begin{bmatrix}
+    7 \\
+    14 \\
+    28
+    \end{bmatrix}$
+    
+\medskip
+
+This clearly has at least two 2-sparse solutions: 
+$x_1=[ 1 \;\; 3 \;\;  0 \;\;  0 \;\;  0 \;\;  0 ]^T$   \; and \;
+$x_2=[ 1 \;\; 0 \;\;  1.5 \;\;  0 \;\;  0 \;\;  0 ]^T$
+
+
+In fact, we can prove that if 
+
+(a) There is at least one solution $\mathbf{x}$ to $\mathbf{y=\Phi x}$ ; \;\; and
+(b) Every 4 columns of the matrix  $\mathbf{\Phi}$ are linearly independent. 
+
+Then there is a unique solution. 
+
+(This was actually proved by contradiction in class as a theorem: any 2S columns of an $m \times n$ matrix $\Phi$ are linearly independent. Then
+any S-sparse signal f can be uniquely
+reconstructed from measurements $y= \Phi f$. )
+
+\newpage
+
+\subsection*{4(d) Only 2 non-zero elements, m=4}
+
+Again here, I can give an example, for whic answer is not unique: 
+
+consider: 
+
+$ \Phi = $  $\begin{bmatrix}
+    1 & 2 & 4 & 5 & 6 & 9\\
+    2 & 4 & 8 & 6 & 9 & 11\\
+    4 & 8 & 16 & 9 & 11 & 1\\
+    8 & 16 & 32 & 11 & 1 & 25\\
+    \end{bmatrix} $
+  and  
+$    y= $  $\begin{bmatrix}
+    7 \\
+    14 \\
+    28 \\
+    56
+    \end{bmatrix}$
+    
+\medskip
+
+
+This clearly has at least two 2-sparse solutions: 
+$x_1=[ 1 \;\; 3 \;\;  0 \;\;  0 \;\;  0 \;\;  0 ]^T$   \; and \;
+$x_2=[ 1 \;\; 0 \;\;  1.5 \;\;  0 \;\;  0 \;\;  0 ]^T$
+
+
+
+In fact, we can prove that if 
+
+(a) There is at least one solution $\mathbf{x}$ to $\mathbf{y=\Phi x}$ ; \;\; and
+(b) Every 4 columns of the matrix  $\mathbf{\Phi}$ are linearly independent. 
+
+Then there is a unique solution. 
+
+(This was actually proved by contradiction in class as a theorem: any 2S columns of an $m \times n$ matrix $\Phi$ are linearly independent. Then
+any S-sparse signal f can be uniquely
+reconstructed from measurements $y= \Phi f$. )
 
 
 \newpage
